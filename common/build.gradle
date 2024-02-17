@@ -1,0 +1,26 @@
+plugins {
+    id 'scala'
+    id 'idea'
+}
+
+group = 'me.katze.cosmos'
+version = '0.0.1'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "Azure-SLP"
+        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+        content {
+            it.includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
+            it.includeModule("org.typelevel", "cats-core_3")
+            it.includeModule("org.typelevel", "cats-kernel_3")
+            it.includeModule("org.typelevel", "cats-free_3")
+        }
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.scala-lang', name: 'scala3-library_3', version: '3.3.1'
+    compileOnly(group: 'org.typelevel', name: 'cats-core_3', version: '2.9.2-kotori')
+}
