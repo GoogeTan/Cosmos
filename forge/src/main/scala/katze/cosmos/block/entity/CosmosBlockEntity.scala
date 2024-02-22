@@ -2,7 +2,7 @@ package katze.cosmos.block.entity
 
 import katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import me.katze.cosmos.Savable
-import me.katze.cosmos.block.BlockEntityBehaviour
+import me.katze.cosmos.block.Tickable
 import me.katze.cosmos.data.{ FunctionRef, Ref }
 import me.katze.cosmos.position.BlockPosition
 import net.minecraft.core.BlockPos
@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.entity.{ BlockEntity, BlockEntityType }
 import net.minecraft.world.level.block.state.BlockState
 
 final class CosmosBlockEntity[
-                                +S <: BlockEntityBehaviour with Savable[CompoundTag]
+                                +S <: Tickable with Savable[Tag]
                               ](
                                   typeIn : BlockEntityType[_ <: CosmosBlockEntity[S]],
                                   posIn : BlockPos,
@@ -34,7 +34,7 @@ final class CosmosBlockEntity[
   end saveAdditional
   
   def tickServer() : Unit =
-    state.tickServer()
+    state.tick()
   end tickServer
   
   private object BlockPosRef extends BlockPosition:

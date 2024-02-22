@@ -1,6 +1,9 @@
 package me.katze.cosmos.block.fluid
 
-final class InWorldFluidSource[Stack, Fluid](block : InWorldFluid[Fluid, Stack], emptyStack : Stack) extends CountableSource[Stack, Fluid]:
+final class InWorldFluidSource[Stack, Fluid](
+                                              block : InWorldFluid[Fluid, Stack], 
+                                              emptyStack : Stack
+                                            ) extends CountableSource[Stack, Fluid]:
   override def askForExact(amount: Int): Option[Stack] =
     if amount != block.amount then
       None
@@ -26,7 +29,7 @@ final class InWorldFluidSource[Stack, Fluid](block : InWorldFluid[Fluid, Stack],
       None
   end askForBucket
   
-  override def fluidType: Fluid = block.fluidType
+  override def ingredient: Fluid = block.fluidType
   
   override def toString: String = s"BlockFluidSource($block)"
 end InWorldFluidSource

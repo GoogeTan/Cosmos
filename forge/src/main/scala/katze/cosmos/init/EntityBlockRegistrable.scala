@@ -4,10 +4,10 @@ import katze.cosmos.block.CosmosEntityBlock
 import katze.cosmos.block.entity.CosmosBlockEntity
 import katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import me.katze.cosmos.Savable
-import me.katze.cosmos.block.BlockEntityBehaviour
+import me.katze.cosmos.block.Tickable
 import me.katze.cosmos.data.UnsafeVar
 import net.minecraft.core.registries.Registries
-import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.{ CompoundTag, Tag }
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.registries.RegisterEvent
 
 final class EntityBlockRegistrable[
-                                    +B <: BlockEntityBehaviour with Savable[CompoundTag]
+                                    +B <: Tickable with Savable[Tag]
                                   ](
                                       name : ResourceLocation,
                                       properties : BlockBehaviour.Properties,

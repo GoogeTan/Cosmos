@@ -2,26 +2,32 @@ package me.katze.cosmos.block.fluid
 
 import me.katze.cosmos.Savable
 
-// TODO Доделать сереализацию
 final class Tank[ 
-                  CompoundTag,
+                  Tag,
                   Fluid,
-                  FluidStack <: Countable & Savable[CompoundTag] & Mergeable[Fluid, FluidStack],
+                  FluidStack <: Countable & Savable[Tag] & Mergeable[Fluid, FluidStack],
                 ](
                     private var stack : FluidStack,
-                    maxCapacity : Int
-                ) extends LiquidSink[CountableSource[FluidStack, Fluid]] with Savable[CompoundTag]:
+                    maxCapacity : Capacity with Savable[Tag],
+                    compoundTag : Map[String, Tag] => Tag
+                  ) extends Sink[CountableSource[FluidStack, Fluid]] with Savable[Tag]:
   override def tryTakeFrom(source: CountableSource[FluidStack, Fluid]): Unit =
-    if !stack.isMergeResultEmpty(source.fluidType) then
-      return
+    if !stack.isMergeResultEmpty(source.ingredient) then
+      this.stack = stack.merge(source.askForLessThen(freeAmount))
     end if
-    this.stack = stack.merge(source.askForLessThen(freeAmount))
   end tryTakeFrom
   
-  def freeAmount : Int = maxCapacity - stack.amount
+  def freeAmount : Int = maxCapacity.remains(stack.amount)
   
-  override def save: CompoundTag = stack.save
+  override def save: Tag =
+    compoundTag(
+      Map(
+        "stack" -> stack.save,
+        "capacity" -> maxCapacity.save
+      )
+    )
+  end save
   
-  override def toString: String = s"Tank(max=$maxCapacity;stack=$stack)"
+  override def toString: String = s"Tank(capacity=$maxCapacity;stack=$stack)"
 end Tank
 

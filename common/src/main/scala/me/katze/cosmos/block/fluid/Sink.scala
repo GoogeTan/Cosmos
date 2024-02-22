@@ -1,5 +1,5 @@
 package me.katze.cosmos.block.fluid
 
-trait LiquidSink[-Source]:
+trait Sink[-Source]:
   def tryTakeFrom(source: Source): Unit
-end LiquidSink
+end Sink

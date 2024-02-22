@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import katze.cosmos.block.entity.CosmosBlockEntity
 import katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import me.katze.cosmos.Savable
-import me.katze.cosmos.block.BlockEntityBehaviour
+import me.katze.cosmos.block.Tickable
 import me.katze.cosmos.data.Ref
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.{ CompoundTag, Tag }
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec
 import net.minecraft.world.level.block.state.{ BlockBehaviour, BlockState }
 
 final class CosmosEntityBlock[
-                                S <: BlockEntityBehaviour with Savable[CompoundTag]
+                                S <: Tickable with Savable[Tag]
                               ](
                                   properties : BlockBehaviour.Properties,
                                   entityTypeRef : Ref[BlockEntityType[_ <: CosmosBlockEntity[S]]],

@@ -1,11 +1,12 @@
 package katze.cosmos
 
+import katze.cosmos.block.IntCapacity
 import katze.cosmos.block.entity.behaviour.block.{ EmptyInWorldBlock, SidedInWorldBlock, SimpleInWorldBlock }
 import katze.cosmos.block.entity.behaviour.fluid.{ FancyFluidStack, SimpleInWorldFluid }
 import katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import katze.cosmos.init.{ EntityBlockRegistrable, IterableRegistrable, RegistryRegistrable }
 import me.katze.cosmos.Savable
-import me.katze.cosmos.block.{ BlockEntityBehaviour, FluidContainerEntityBehaviour }
+import me.katze.cosmos.block.{ SingleStackContainerBehaviour, Tickable }
 import me.katze.cosmos.block.fluid.{ InWorldFluidSource, Tank }
 import me.katze.cosmos.data.{ MapRef, Ref }
 import me.katze.cosmos.position.{ BlockAbovePosition, BlockPosition }
@@ -38,11 +39,18 @@ final class Cosmos:
   object Blocks:
     def location(path : String) : ResourceLocation = ResourceLocation("cosmos", path)
     
-    def fluidHopperBehaviourFabric(level : Ref[Level | Null], tag : Ref[Option[CompoundTag]], position : BlockPosition, state : Ref[BlockState]) : BlockEntityBehaviour with Savable[CompoundTag] =
+    def fluidHopperBehaviourFabric(level : Ref[Level | Null], tag : Ref[Option[CompoundTag]], position : BlockPosition, state : Ref[BlockState]) : Tickable with Savable[Tag] =
       val dist = MapRef(level, level => if level.isClientSide then Dist.CLIENT else Dist.DEDICATED_SERVER)
-      FluidContainerEntityBehaviour(
-        liquidTank = Tank(FancyFluidStack.empty, 12000),
-        inputContainers = List(
+      SingleStackContainerBehaviour(
+        stack = Tank(
+          FancyFluidStack.empty, 
+          IntCapacity(12000),
+          (map : Map[String, Tag]) => 
+            val res = CompoundTag()
+            map.foreach((key, value) => res.put(key, value))
+            res
+        ),
+        input = List(
           InWorldFluidSource(
             SimpleInWorldFluid(
               SidedInWorldBlock(
@@ -53,13 +61,12 @@ final class Cosmos:
             ),
             FancyFluidStack.empty
           )
-        ),
-        outputContainers = List()
+        )
       )
     end fluidHopperBehaviourFabric
     
     def entityBlock[
-                      B <: BlockEntityBehaviour with Savable[CompoundTag]
+                      B <: Tickable with Savable[Tag]
                     ](
                         name: String, behaviour: BlockEntityBehaviourFabric[B],
                         properties: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
