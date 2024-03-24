@@ -14,6 +14,12 @@ buildscript {
     dependencies {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.github.johnrengelman:shadow:8.1.1'
+    }
 }
 
 plugins {
@@ -22,6 +28,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.spongepowered.mixin'
 
 group = mod_group_id
@@ -216,11 +223,28 @@ sourceSets.each {
 }
 
 abstract class FixMainClassNotFoundError extends DefaultTask {
+    static void deleteIfExists(File directoryToBeDeleted) {
+        if (!directoryToBeDeleted.exists())
+            return
+        if (directoryToBeDeleted.isFile()) {
+            directoryToBeDeleted.delete()
+        } else {
+            Files.walk(directoryToBeDeleted.toPath())
+                    .forEach {
+                        if (it != directoryToBeDeleted.toPath()) {
+                            deleteIfExists(it.toFile())
+                        }
+                    }
+            directoryToBeDeleted.delete()
+        }
+    }
+
     static def copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation) throws IOException {
         Files.walk(Paths.get(sourceDirectoryLocation))
                 .forEach(source -> {
                     var destination = Paths.get(destinationDirectoryLocation, source.toString().substring(sourceDirectoryLocation.length()));
                     try {
+                        deleteIfExists(destination.toFile())
                         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
                     } catch (IOException e) {
                         e.printStackTrace()
@@ -228,28 +252,26 @@ abstract class FixMainClassNotFoundError extends DefaultTask {
                 })
     }
 
-    boolean deleteIfExists(File directoryToBeDeleted) {
-        if (!directoryToBeDeleted.exists())
-            return false
-        File[] allContents = directoryToBeDeleted.listFiles()
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteIfExists(file)
-            }
-        }
-        return directoryToBeDeleted.delete()
-    }
-
     @TaskAction
     def fix() {
-        deleteIfExists(Paths.get(project.rootDir.path + "\\build\\sourcesSets\\main\\katze").toFile())
         copyDirectory(project.rootDir.path + "\\build\\classes\\scala\\main", project.rootDir.path + "\\build\\sourcesSets\\main")
     }
 }
 tasks.register('fixMainClassNotFoundError', FixMainClassNotFoundError)
-tasks.withType(ScalaCompile).configureEach {
-    finalizedBy 'fixMainClassNotFoundError'
+
+tasks.named("classes").configure {
+    finalizedBy("fixMainClassNotFoundError")
 }
+
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
+shadowJar {
+    archiveBaseName.set('shadow')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+
+    dependencies {
+        include(project(':common'))
+    }
 }

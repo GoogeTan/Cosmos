@@ -8,9 +8,9 @@ final class SingleStackContainerBehaviour[
                                             Stack <: Savable[Storage] with Sink[Source],
                                             Source
                                           ](
-                                              val input  : List[Source],
-                                              val stack: Stack,
-                                              val outputs : List[Sink[Stack]]
+                                            val input  : List[Source],
+                                            val stack: Stack,
+                                            val output : List[Sink[Stack]]
                                           ) extends Tickable with Savable[Storage]:
   override def save: Storage =
     stack.save
@@ -18,6 +18,6 @@ final class SingleStackContainerBehaviour[
   
   override def tick(): Unit =
     input.foreach(stack.tryTakeFrom)
-    outputs.foreach(_.tryTakeFrom(stack))
+    output.foreach(_.tryTakeFrom(stack))
   end tick
 end SingleStackContainerBehaviour

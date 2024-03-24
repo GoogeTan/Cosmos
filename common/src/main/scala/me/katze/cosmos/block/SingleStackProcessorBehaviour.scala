@@ -6,30 +6,34 @@ import me.katze.cosmos.block.fluid.{ Countable, CountableSource, Sink }
 final class SingleStackProcessorBehaviour[
                                             Ingredient,
                                             Stack <: Countable,
-                                            ProcessingProcess <: Tickable & Recipe & Savable[Storage],
-                                            Storage
+                                            RecipeInProgress <: Tickable & Recipe & Savable[Storage],
+                                            +Storage
                                           ](
-                                            input : CountableSource[Stack, Ingredient],
-                                            private var currentStack : ProcessingProcess,
-                                            book : RecipeBook[Ingredient, (Int, Stack => ProcessingProcess)],
-                                            val outputs : List[Sink[ProcessingProcess]]
+                                              private val ingredientSource : CountableSource[Stack, Ingredient],
+                                              private var currentRecipe    : RecipeInProgress,
+                                              private val book             : RecipeBook[Ingredient, (Int, Stack => RecipeInProgress)],
+                                              private val output           : Sink[RecipeInProgress]
                                           ) extends Tickable, Savable[Storage]:
   override def tick(): Unit =
-    if currentStack.empty then
-      val (amountRequired, recipeFabric) = book.recipeFor(input.ingredient)
-      input.askForExact(amountRequired).foreach:
-        stack =>
-          currentStack = recipeFabric(stack)
+    if currentRecipe.empty then
+      tryStartCooking()
     else
-      currentStack.tick()
-      if currentStack.complete then
-        outputs.foreach(_.tryTakeFrom(currentStack))
+      currentRecipe.tick()
+      if currentRecipe.complete then
+        output.tryTakeFrom(currentRecipe)
       end if
     end if
   end tick
   
+  private def tryStartCooking() : Unit =
+    val (amountRequired, recipeFabric) = book.recipeFor(ingredientSource.ingredient)
+    ingredientSource.askForExact(amountRequired).foreach:
+      stack =>
+        currentRecipe = recipeFabric(stack)
+  end tryStartCooking
+  
   override def save: Storage =
-    currentStack.save
+    currentRecipe.save
   end save
 end SingleStackProcessorBehaviour
 
