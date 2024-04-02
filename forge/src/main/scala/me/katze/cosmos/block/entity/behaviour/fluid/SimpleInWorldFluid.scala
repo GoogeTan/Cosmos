@@ -1,7 +1,7 @@
 package me.katze.cosmos.block.entity.behaviour.fluid
 
 import me.katze.cosmos.block.entity.behaviour.block.InWorldBlock
-import me.katze.cosmos.block.fluid.InWorldFluid
+import me.katze.cosmos.common.block.fluid.InWorldFluid
 import net.minecraft.world.level.material.Fluid
 
 final class SimpleInWorldFluid(block : InWorldBlock) extends InWorldFluid[Fluid, FancyFluidStack]:
@@ -14,5 +14,7 @@ final class SimpleInWorldFluid(block : InWorldBlock) extends InWorldFluid[Fluid,
   override def amount: Int = fluidStack.amount
   
   override def isSource: Boolean = block.fluidState.isSource
+  
+  override def toString: String = s"SimpleInWorldFluid(${block.toString})"
 end SimpleInWorldFluid
 

@@ -1,6 +1,6 @@
 package me.katze.cosmos.block.entity.behaviour.block
 
-import me.katze.cosmos.Destroyable
+import me.katze.cosmos.common.Destroyable
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 

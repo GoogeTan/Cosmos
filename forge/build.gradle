@@ -153,12 +153,16 @@ repositories {
 
 compileScala.dependsOn(processResources)
 
+configurations {
+    shade
+    implementation.extendsFrom shade
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly group: 'org.scala-lang', name: 'scala3-library_3', version: '3.3.1'
+    //compileOnly group: 'org.scala-lang', name: 'scala3-library_3', version: '3.3.1'
 
-    //compileOnly(group: 'org.scala-lang', name: 'scala-library', version: '3.3.0')
     // Add if you need this library. I use a modified version of Cats to avoid some module errors.
     compileOnly(group: 'org.typelevel', name: 'cats-core_3', version: '2.9.2-kotori')
 
@@ -167,13 +171,10 @@ dependencies {
     runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "3.3.1-build-5", classifier: "with-library") {transitive(false)}
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation(project(":common"))
+    minecraftLibrary(project(":common"))
+    shade(project(":common"))
 }
 
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
-// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
             minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -212,66 +213,26 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
-// Merge the resources and classes into the same directory.
-// This is done because java expects modules to be in a single directory.
-// And if we have it in multiple we have to do performance intensive hacks like having the UnionFileSystem
-// This will eventually be migrated to ForgeGradle so modders don't need to manually do it. But that is later.
 sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
 
-abstract class FixMainClassNotFoundError extends DefaultTask {
-    static void deleteIfExists(File directoryToBeDeleted) {
-        if (!directoryToBeDeleted.exists())
-            return
-        if (directoryToBeDeleted.isFile()) {
-            directoryToBeDeleted.delete()
-        } else {
-            Files.walk(directoryToBeDeleted.toPath())
-                    .forEach {
-                        if (it != directoryToBeDeleted.toPath()) {
-                            deleteIfExists(it.toFile())
-                        }
-                    }
-            directoryToBeDeleted.delete()
-        }
-    }
-
-    static def copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation) throws IOException {
-        Files.walk(Paths.get(sourceDirectoryLocation))
-                .forEach(source -> {
-                    var destination = Paths.get(destinationDirectoryLocation, source.toString().substring(sourceDirectoryLocation.length()));
-                    try {
-                        deleteIfExists(destination.toFile())
-                        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
-                    } catch (IOException e) {
-                        e.printStackTrace()
-                    }
-                })
-    }
-
-    @TaskAction
-    def fix() {
-        copyDirectory(project.rootDir.path + "\\build\\classes\\scala\\main", project.rootDir.path + "\\build\\sourcesSets\\main")
-    }
-}
-tasks.register('fixMainClassNotFoundError', FixMainClassNotFoundError)
-
-tasks.named("classes").configure {
-    finalizedBy("fixMainClassNotFoundError")
-}
-
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    archiveClassifier = 'slim'
 }
-shadowJar {
-    archiveBaseName.set('shadow')
-    archiveClassifier.set('')
-    archiveVersion.set('')
 
-    dependencies {
-        include(project(':common'))
-    }
+shadowJar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    archiveClassifier = ''
+    configurations = [project.configurations.shade]
+    finalizedBy 'reobfShadowJar'
+}
+
+assemble.dependsOn shadowJar
+
+reobf {
+    shadowJar {}
 }

@@ -1,6 +1,6 @@
 package me.katze.cosmos.data
 
-import me.katze.cosmos.data.Ref
+import me.katze.cosmos.common.data.Ref
 import net.minecraft.nbt.{ NumericTag, Tag }
 
 final class TagInt(tag : Ref[? <: Tag], orElse : Tag => Int) extends Ref[Int]:

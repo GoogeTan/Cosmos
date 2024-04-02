@@ -1,6 +1,6 @@
 package me.katze.cosmos.block.entity.behaviour.block
 
-import me.katze.cosmos.data.Ref
+import me.katze.cosmos.common.data.Ref
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import net.minecraftforge.api.distmarker.Dist
@@ -20,5 +20,10 @@ final class SidedInWorldBlock(side : Ref[Dist], server : InWorldBlock, client : 
     case Dist.CLIENT => client.destroy()
     case Dist.DEDICATED_SERVER => server.destroy()
   end destroy
+  
+  override def toString: String = side.value match
+    case Dist.CLIENT => client.toString
+    case Dist.DEDICATED_SERVER => server.toString
+  end toString
 end SidedInWorldBlock
 

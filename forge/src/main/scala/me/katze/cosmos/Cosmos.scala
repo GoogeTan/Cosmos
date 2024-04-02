@@ -1,26 +1,31 @@
 package me.katze.cosmos
 
-import me.katze.cosmos.Savable
+import me.katze.cosmos.block.IntCapacity
 import me.katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import me.katze.cosmos.block.entity.behaviour.block.{ EmptyInWorldBlock, SidedInWorldBlock, SimpleInWorldBlock }
 import me.katze.cosmos.block.entity.behaviour.fluid.{ FancyFluidStack, SimpleInWorldFluid }
-import me.katze.cosmos.block.fluid.{ InWorldFluidSource, Tank }
-import me.katze.cosmos.block.{ IntCapacity, SingleStackContainerBehaviour, Tickable }
+import me.katze.cosmos.common.block.fluid.{ InWorldFluidSource, Tank }
+import me.katze.cosmos.common.block.{ SingleStackContainerBehaviour, Tickable }
+import me.katze.cosmos.common.data.{ Eager, FunctionRef, MapRef, Ref }
+import me.katze.cosmos.common.position.{ BlockAbovePosition, BlockPosition }
+import me.katze.cosmos.common.{ Savable, Usable }
 import me.katze.cosmos.data.*
+import me.katze.cosmos.entity.CommonPlayer
 import me.katze.cosmos.init.{ EntityBlockRegistrable, IterableRegistrable, RegistryRegistrable }
-import me.katze.cosmos.position.{ BlockAbovePosition, BlockPosition }
 import net.minecraft.nbt.{ CompoundTag, Tag }
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.{ BlockBehaviour, BlockState }
-import net.minecraft.world.level.material.{ Fluid, Fluids, MapColor }
+import net.minecraft.world.level.material.{ Fluid, MapColor }
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.ForgeRegistries
 
+//noinspection ScalaUnusedSymbol
 @Mod("cosmos")
 final class Cosmos:
   private val modBlocks: IterableRegistrable = IterableRegistrable(
@@ -65,9 +70,10 @@ final class Cosmos:
       )
     end TagAsFancyFluid
     
-    def fluidHopperBehaviourFabric(level : Ref[Level | Null], tag : Option[Ref[CompoundTag]], position : BlockPosition, state : Ref[BlockState]) : Tickable with Savable[Tag] =
+    def fluidHopperBehaviourFabric(level : Ref[Level | Null], tag : Option[Ref[CompoundTag]], position : BlockPosition, state : Ref[BlockState]) : Tickable with Savable[Tag] with Usable[CommonPlayer] =
       val dist = MapRef(level, level => if level.isClientSide then Dist.CLIENT else Dist.DEDICATED_SERVER)
       SingleStackContainerBehaviour(
+        isDebug = MapRef(dist, d => d == Dist.DEDICATED_SERVER),
         stack = Tank(
           tag.map(TagAsFancyFluid).getOrElse(FancyFluidStack.empty),
           IntCapacity(12000),
@@ -90,7 +96,7 @@ final class Cosmos:
     end fluidHopperBehaviourFabric
     
     def entityBlock[
-                      B <: Tickable with Savable[Tag]
+                      B <: Tickable with Savable[Tag] with Usable[CommonPlayer]
                     ](
                         name: String, behaviour: BlockEntityBehaviourFabric[B],
                         properties: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
