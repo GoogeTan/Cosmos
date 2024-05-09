@@ -1,6 +1,6 @@
 package me.katze.cosmos.block.entity.behaviour.block
 
-import me.katze.cosmos.common.data.Ref
+import me.katze.cosmos.common.based.data.Ref
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import net.minecraftforge.api.distmarker.Dist

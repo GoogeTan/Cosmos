@@ -1,6 +1,6 @@
 package me.katze.cosmos.entity
 
-import me.katze.cosmos.common.Postmen
+import me.katze.cosmos.common.based.Postmen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Player
 

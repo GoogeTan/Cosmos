@@ -1,6 +1,6 @@
 package me.katze.cosmos.data
 
-import me.katze.cosmos.common.data.{ MapRef, Ref }
+import me.katze.cosmos.common.based.data.{ MapRef, Ref }
 import net.minecraft.nbt.{ CompoundTag, Tag }
 
 def SubTag(ref : Ref[CompoundTag], key : Ref[String] | String) : Ref[Tag | Null] =

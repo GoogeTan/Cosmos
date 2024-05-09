@@ -1,7 +1,7 @@
 package me.katze.cosmos.block.entity.behaviour.fluid
 
 import me.katze.cosmos.block.entity.behaviour.block.InWorldBlock
-import me.katze.cosmos.common.block.fluid.InWorldFluid
+import me.katze.cosmos.common.based.fluid.InWorldFluid
 import net.minecraft.world.level.material.Fluid
 
 final class SimpleInWorldFluid(block : InWorldBlock) extends InWorldFluid[Fluid, FancyFluidStack]:

@@ -1,6 +1,7 @@
 package me.katze.cosmos.common.block.fluid
 
-import me.katze.cosmos.common.Savable
+import me.katze.cosmos.common.based.Savable
+import me.katze.cosmos.common.based.fluid.{ Capacity, Countable, CountableSource, Mergeable }
 
 final class Tank[ 
                   Tag,

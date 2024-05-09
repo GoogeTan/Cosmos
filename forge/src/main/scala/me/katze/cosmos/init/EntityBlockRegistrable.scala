@@ -4,9 +4,9 @@ import me.katze.cosmos.CosmosException
 import me.katze.cosmos.block.CosmosEntityBlock
 import me.katze.cosmos.block.entity.CosmosBlockEntity
 import me.katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
-import me.katze.cosmos.common.{ Savable, Usable }
+import me.katze.cosmos.common.based.{ Savable, Usable }
+import me.katze.cosmos.common.based.data.UnsafeVar
 import me.katze.cosmos.common.block.Tickable
-import me.katze.cosmos.common.data.UnsafeVar
 import me.katze.cosmos.entity.CommonPlayer
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.{ CompoundTag, Tag }

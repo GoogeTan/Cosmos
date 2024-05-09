@@ -1,7 +1,7 @@
 package me.katze.cosmos.block.entity.behaviour.block
 
-import me.katze.cosmos.common.data.Ref
-import me.katze.cosmos.common.position.BlockPosition
+import me.katze.cosmos.common.based.data.Ref
+import me.katze.cosmos.common.based.position.BlockPosition
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks

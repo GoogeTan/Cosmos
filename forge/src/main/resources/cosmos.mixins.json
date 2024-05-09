@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "katze.cosmos.mixin",
+  "package": "me.katze.cosmos.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "cosmos.refmap.json",
   "mixins": [

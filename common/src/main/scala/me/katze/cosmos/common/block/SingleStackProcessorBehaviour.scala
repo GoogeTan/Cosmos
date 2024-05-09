@@ -1,7 +1,8 @@
 package me.katze.cosmos.common.block
 
-import me.katze.cosmos.common.Savable
-import me.katze.cosmos.common.block.fluid.{ Countable, CountableSource, Sink }
+import me.katze.cosmos.common.based.Savable
+import me.katze.cosmos.common.based.fluid.{ Countable, CountableSource }
+import me.katze.cosmos.common.block.fluid.Sink
 
 final class SingleStackProcessorBehaviour[
                                             Ingredient,

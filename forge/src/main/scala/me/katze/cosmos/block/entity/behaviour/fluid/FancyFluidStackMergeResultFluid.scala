@@ -1,6 +1,6 @@
 package me.katze.cosmos.block.entity.behaviour.fluid
 
-import me.katze.cosmos.common.data.Ref
+import me.katze.cosmos.common.based.data.Ref
 import net.minecraft.world.level.material.{ Fluid, Fluids }
 
 final class FancyFluidStackMergeResultFluid(first: Ref[Fluid], second: Ref[Fluid]) extends Ref[Fluid]:

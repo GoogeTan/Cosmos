@@ -1,9 +1,9 @@
 package me.katze.cosmos.common.block
 
+import me.katze.cosmos.common.based.data.Ref
 import me.katze.cosmos.common.block.InteractionResult.PASS
-import me.katze.cosmos.common.{ BlockHitResult, Hand, Postmen, Savable, Usable }
+import me.katze.cosmos.common.based.{ BlockHitResult, Hand, Postmen, Savable, Usable }
 import me.katze.cosmos.common.block.fluid.Sink
-import me.katze.cosmos.common.data.Ref
 
 final class SingleStackContainerBehaviour[
                                             Player <: Postmen,

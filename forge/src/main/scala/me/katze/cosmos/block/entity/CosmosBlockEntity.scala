@@ -1,10 +1,10 @@
 package me.katze.cosmos.block.entity
 
 import me.katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
-import me.katze.cosmos.common.{ BlockHitResult, Hand, Savable, Usable }
+import me.katze.cosmos.common.based.data.{ FunctionRef, Ref }
+import me.katze.cosmos.common.based.position.BlockPosition
+import me.katze.cosmos.common.based.{ BlockHitResult, Hand, Savable, Usable }
 import me.katze.cosmos.common.block.{ InteractionResult, Tickable }
-import me.katze.cosmos.common.data.{ FunctionRef, Ref }
-import me.katze.cosmos.common.position.BlockPosition
 import me.katze.cosmos.entity.CommonPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.{ CompoundTag, Tag }

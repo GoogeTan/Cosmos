@@ -1,11 +1,11 @@
 package me.katze.cosmos.block.entity.behaviour.fluid
 
 import FancyFluidStack.emptyFluidRef
-import me.katze.cosmos.common.Savable
+import me.katze.cosmos.common.based.Savable
+import me.katze.cosmos.common.based.data.{ AreSame, ConditionalRef, FunctionRef, Ref }
+import me.katze.cosmos.common.based.data.number.Sum
+import me.katze.cosmos.common.based.fluid.{ Countable, Mergeable }
 import me.katze.cosmos.data.MapTag
-import me.katze.cosmos.common.block.fluid.{ Countable, Mergeable }
-import me.katze.cosmos.common.data.{ AreSame, ConditionalRef, FunctionRef, Ref }
-import me.katze.cosmos.common.data.number.Sum
 import net.minecraft.nbt.{ CompoundTag, IntTag, StringTag }
 import net.minecraft.world.level.material.{ Fluid, FluidState, Fluids }
 import net.minecraftforge.registries.ForgeRegistries

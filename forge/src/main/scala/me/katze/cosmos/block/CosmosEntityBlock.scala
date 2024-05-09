@@ -4,10 +4,11 @@ import com.mojang.serialization.MapCodec
 import me.katze.cosmos.block.entity.CosmosBlockEntity
 import me.katze.cosmos.block.entity.behaviour.BlockEntityBehaviourFabric
 import me.katze.cosmos.common
+import me.katze.cosmos.common.based.{ Hand, Savable, Usable }
+import me.katze.cosmos.common.based.data.Ref
+import me.katze.cosmos.common.based.position.{ BlockPosition, EntityPosition }
 import me.katze.cosmos.common.block.{ InteractionResult, Tickable }
-import me.katze.cosmos.common.data.Ref
-import me.katze.cosmos.common.position.{ BlockPosition, EntityPosition }
-import me.katze.cosmos.common.{ Hand, Savable, Usable, block, BlockHitResult as CommonBlockHitResult }
+import me.katze.cosmos.common.block
 import me.katze.cosmos.entity.CommonPlayer
 import net.minecraft.core.{ BlockPos, Direction }
 import net.minecraft.nbt.Tag
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.{ BlockEntity, BlockEntityTicker, 
 import net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec
 import net.minecraft.world.level.block.state.{ BlockBehaviour, BlockState }
 import net.minecraft.world.phys.{ BlockHitResult, HitResult }
+import me.katze.cosmos.common.based.BlockHitResult as CommonBlockHitResult
 
 final class CosmosEntityBlock[
                                 S <: Tickable with Savable[Tag] with Usable[CommonPlayer]
@@ -48,7 +50,7 @@ final class CosmosEntityBlock[
   end use
   
   // TODO refactor this hell
-  def asVanilaResult(interactionResult: block.InteractionResult): world.InteractionResult =
+  private def asVanilaResult(interactionResult: block.InteractionResult): world.InteractionResult =
     interactionResult match
       case block.InteractionResult.SUCCESS => world.InteractionResult.SUCCESS
       case block.InteractionResult.CONSUME => world.InteractionResult.CONSUME
@@ -58,14 +60,14 @@ final class CosmosEntityBlock[
     end match
   end asVanilaResult
   
-  def asCommonHand(hand : InteractionHand) : Hand =
+  private def asCommonHand(hand : InteractionHand) : Hand =
     hand match
       case InteractionHand.MAIN_HAND => Hand.Main
       case InteractionHand.OFF_HAND => Hand.Off
     end match
   end asCommonHand
   
-  def asCommonHitResult(hit : BlockHitResult) : CommonBlockHitResult =
+  private def asCommonHitResult(hit : BlockHitResult) : CommonBlockHitResult =
     CommonBlockHitResult(
       hit.getType == HitResult.Type.MISS,
       Vec3Location(hit.getLocation.x.toFloat, hit.getLocation.y.toFloat, hit.getLocation.z.toFloat),
@@ -75,17 +77,17 @@ final class CosmosEntityBlock[
     )
   end asCommonHitResult
   
-  def asCommonDirection(direction : Direction): common.Direction =
+  private def asCommonDirection(direction : Direction): common.based.Direction =
     direction match
-      case Direction.DOWN  => common.Direction.Down
-      case Direction.UP    => common.Direction.Up
-      case Direction.NORTH => common.Direction.North
-      case Direction.SOUTH => common.Direction.South
-      case Direction.WEST  => common.Direction.West
-      case Direction.EAST  => common.Direction.East
+      case Direction.DOWN  => common.based.Direction.Down
+      case Direction.UP    => common.based.Direction.Up
+      case Direction.NORTH => common.based.Direction.North
+      case Direction.SOUTH => common.based.Direction.South
+      case Direction.WEST  => common.based.Direction.West
+      case Direction.EAST  => common.based.Direction.East
     end match
   end asCommonDirection
   
-  final class VanilaBlockPosition(override val x : Int, override val y : Int, override val z : Int) extends BlockPosition
-  final class Vec3Location(override val x : Float, override val y : Float, override val z : Float) extends EntityPosition
+  private final class VanilaBlockPosition(override val x : Int, override val y : Int, override val z : Int) extends BlockPosition
+  private final class Vec3Location(override val x : Float, override val y : Float, override val z : Float) extends EntityPosition
 end CosmosEntityBlock

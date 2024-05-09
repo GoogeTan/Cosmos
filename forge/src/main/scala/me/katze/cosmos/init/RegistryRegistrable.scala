@@ -3,6 +3,7 @@ package me.katze.cosmos.init
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.{ ResourceKey, ResourceLocation }
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraftforge.eventbus.api.IEventBus
 import net.minecraftforge.registries.RegisterEvent
@@ -28,4 +29,12 @@ object RegistryRegistrable:
       value
     )
   end Block
+  
+  def Item(location : ResourceLocation, value : Supplier[Item]) : RegistryRegistrable[Item] =
+    RegistryRegistrable(
+      Registries.ITEM,
+      location,
+      value
+    )
+  end Item
 end RegistryRegistrable

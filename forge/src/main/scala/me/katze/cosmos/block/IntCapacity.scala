@@ -1,7 +1,7 @@
 package me.katze.cosmos.block
 
-import me.katze.cosmos.common.Savable
-import me.katze.cosmos.common.block.fluid.Capacity
+import me.katze.cosmos.common.based.Savable
+import me.katze.cosmos.common.based.fluid.Capacity
 import net.minecraft.nbt.IntTag
 
 final class IntCapacity(maxValue : Int) extends Capacity with Savable[IntTag]:
